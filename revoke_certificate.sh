@@ -3,6 +3,11 @@
 PREFIX=$(dirname "${BASH_SOURCE[0]}")
 
 source "${PREFIX}/common.sh"
+if [[ ! -e "${PREFIX}/config.sh" ]] ; then
+  echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
+  exit ${E_NO_CONFIG}
+fi
+source "${PREFIX}/config.sh"
 
 function usage() {
     echo "Usage: ${SELF} [ -t ] [ -h ]"
@@ -30,4 +35,4 @@ else
     TEST_CERT_ARG=""
 fi
 
-certbot revoke ${TEST_CERT_ARG} --agree-tos -m "${EMAIL}" --cert-path "${LETS_ENCRYPT_DIR}/${DOMAIN}/cert.pem" -n
+certbot revoke "${TEST_CERT_ARG}" --agree-tos -m "${EMAIL}" --cert-path "${LETS_ENCRYPT_DIR}/${DOMAIN}/cert.pem" -n
