@@ -13,7 +13,12 @@
 PREFIX=$(dirname ${BASH_SOURCE})
 SELF=$(basename ${BASH_SOURCE})
 
-source ${PREFIX}/common.sh
+source "${PREFIX}/common.sh"
+if [[ ! -e "${PREFIX}/config.sh" ]] ; then
+  echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
+  exit ${E_NO_CONFIG}
+fi
+source "${PREFIX}/config.sh"
 
 function usage() {
   echo "Usage: ${SELF} [ -x ] [ -t ] [ -h ]"
