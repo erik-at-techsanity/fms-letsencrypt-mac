@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PREFIX=$(dirname ${BASH_SOURCE})
+PREFIX=$(dirname "${BASH_SOURCE[0]}")
 
-source ${PREFIX}/common.sh
+source "${PREFIX}/common.sh"
 
 function usage() {
     echo "Usage: ${SELF} [ -t ] [ -h ]"
