@@ -5,10 +5,10 @@
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>PATH</key>
-		<string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+		<string>%%INSTALL_DIR%%:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
 	</dict>
 	<key>Label</key>
-	<string>com.techsanity.fms-ssl</string>
+	<string>%%SERVICE_NAME%%</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>%%INSTALL_DIR%%/get_certificate.sh</string>
