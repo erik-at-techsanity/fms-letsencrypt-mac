@@ -5,6 +5,7 @@ LETS_ENCRYPT_DIR="/etc/letsencrypt/live"
 FILEMAKER_SERVICE="com.filemaker.fms"
 CERTBOT_LOG="/var/log/letsencrypt/letsencrypt.log"
 LAUNCH_DAEMONS_DIR="/Library/LaunchDaemons"
+TEMP_DIR=/tmp
 
 #
 # Behaviour Settings
@@ -22,9 +23,8 @@ EMAIL="you@yourdomain.com"
 FMS_USER="your_fms_admin_username"
 FMS_PASSWORD="your_fms_admin_password"
 FMS_SERVER_PATH="/Library/FileMaker Server"
-PLIST_FILE="com.techsanity.fms-ssl.plist"
 INSTALL_DIR="/path/to/your/install/dir"
-
+SERVICE_NAME="com.techsanity.fms-ssl"
 #
 # Derived Settings
 #
@@ -38,6 +38,9 @@ FULLCHAIN_DESTINATION="${CSTORE_DIR}/fullchain.pem"
 PRIVKEY_SOURCE="${LETS_ENCRYPT_DIR}/${DOMAIN}/privkey.pem"
 PREVKEY_DESTINATION="${CSTORE_DIR}/privkey.pem"
 
+PLIST_FILE="${SERVICE_NAME}.plist"
+PLIST_TEMPLATE_FILE="${PLIST_FILE}.template"
+
 #
 # Return Codes
 #
@@ -50,12 +53,6 @@ E_FMS_SERVER_NOT_RUNNING=4
 #
 # Functions
 #
-function get_file_mtime {
-  TARGET_FILE=$1
-  TIMESTAMP=$(ls -lD "%s" "${TARGET_FILE}" | awk '{ print $6 }')
-  echo ${TIMESTAMP}
-}
-
 function log {
   LEVEL=$1
   MESSAGE=$2
