@@ -24,6 +24,19 @@ if [[ ${EUID} -ne 0 ]] ; then
   exit ${E_USER}
 fi
 
+if [[ -e ${INSTALL_DIR} ]] ; then
+  log "ERROR" "Installation directory ${INSTALL_DIR} already exists. Please remove and retry"
+  exit ${E_INSTALL_DIRECTORY_EXISTS}
+else
+  log "INFO" "Creating install directory ${INSTALL_DIR}"
+  mkdir ${INSTALL_DIR}
+fi
+
+for INSTALLABLE in "${INSTALLABLES[@]}" ; do
+  log "INFO" "Copying ${INSTALLABLE} to ${INSTALL_DIR}"
+  cp "${INSTALLABLE}" "${INSTALL_DIR}"
+done
+
 TEMP_FILE=$(mktemp)
 log "INFO" "Copying ${PLIST_TEMPLATE_FILE} to ${TEMP_FILE}"
 cp "${PREFIX}/${PLIST_TEMPLATE_FILE}" "${TEMP_FILE}"
