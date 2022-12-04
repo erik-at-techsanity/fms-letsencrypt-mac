@@ -7,6 +7,18 @@ E_USER=2
 E_MISSING_REQUIREMENTS=3
 E_FMS_SERVER_NOT_RUNNING=4
 E_NO_CONFIG=5
+E_INSTALL_DIRECTORY_EXISTS=6
+
+#
+# Metadata
+#
+INSTALLABLES=(
+  LICENSE
+  README.md
+  common.sh
+  get_certificate.sh
+  revoke_certificate.sh
+)
 
 #
 # Functions
