@@ -7,7 +7,7 @@ if [[ ! -e "${PREFIX}/config.sh" ]] ; then
   echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
   exit ${E_NO_CONFIG}
 fi
-source "${PREFIX}/config.sh"
+source "${PREFIX}/fms-letsencrypt-mac.conf"
 
 # Checks to see if script is running as root.
 if [[ ${EUID} -ne 0 ]] ; then

@@ -7,7 +7,7 @@ if [[ ! -e "${PREFIX}/config.sh" ]] ; then
   echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
   exit ${E_NO_CONFIG}
 fi
-source "${PREFIX}/config.sh"
+source "${PREFIX}/fms-letsencrypt-mac.conf"
 
 function usage() {
     echo "Usage: ${SELF} [ -t ] [ -h ]"
@@ -35,4 +35,4 @@ else
     TEST_CERT_ARG=""
 fi
 
-certbot revoke "${TEST_CERT_ARG}" --agree-tos -m "${EMAIL}" --cert-path "${LETS_ENCRYPT_DIR}/${DOMAIN}/cert.pem" -n
+certbot revoke ${TEST_CERT_ARG} --agree-tos -m "${EMAIL}" --cert-path "${LETS_ENCRYPT_DIR}/${DOMAIN}/cert.pem" -n

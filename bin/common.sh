@@ -15,7 +15,9 @@ E_INSTALL_DIRECTORY_EXISTS=6
 INSTALLABLES=(
   LICENSE
   README.md
+  VERSION
   common.sh
+  config.sh
   get_certificate.sh
   revoke_certificate.sh
 )

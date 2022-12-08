@@ -7,7 +7,7 @@ if [[ ! -e "${PREFIX}/config.sh" ]] ; then
   echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
   exit ${E_NO_CONFIG}
 fi
-source "${PREFIX}/config.sh"
+source "${PREFIX}/fms-letsencrypt-mac.conf"
 
 function egress {
   if [[ -e ${TEMP_FILE} ]] ; then
@@ -52,6 +52,9 @@ log "INFO" "Changing ownership of ${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
 chown root:wheel "${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
 
 log "INFO" "Changing file mode of ${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
-chmod o-w "${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
+chmod 644 "${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
+
+log "INFO" "Loading Certificate refresher"
+launchctl load "${LAUNCH_DAEMONS_DIR}/${PLIST_FILE}"
 
 log "INFO" "Done"
