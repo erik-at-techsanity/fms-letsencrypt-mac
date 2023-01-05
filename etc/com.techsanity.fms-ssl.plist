@@ -11,7 +11,7 @@
 	<string>com.techsanity.fms-ssl</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/opt/homebrew/bin/get_certificate.sh</string>
+		<string>/opt/homebrew/bin/get_certificate</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
