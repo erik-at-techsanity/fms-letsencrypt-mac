@@ -1,6 +1,7 @@
 #
 # Return Codes
 #
+# shellcheck disable=SC2034
 E_OK=0
 E_USAGE=1
 E_USER=2
@@ -10,26 +11,12 @@ E_NO_CONFIG=5
 E_INSTALL_DIRECTORY_EXISTS=6
 
 #
-# Metadata
-#
-INSTALLABLES=(
-  LICENSE
-  README.md
-  VERSION
-  common.sh
-  config.sh
-  get_certificate.sh
-  revoke_certificate.sh
-)
-
-#
 # Functions
 #
 function log {
   LEVEL=$1
   MESSAGE=$2
   TIMESTAMP=$(date +"%Y-%m-%d %H-%I-%S")
-
   echo "${TIMESTAMP} : ${LEVEL} : ${MESSAGE}"
 }
 
