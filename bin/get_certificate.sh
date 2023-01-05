@@ -6,16 +6,14 @@
 #   1. Certbot requires that port 80 be forwarded to your server.
 #   2. This must be run as root.
 #
-# TODO:
-#  * logrotate
-#
+# shellcheck disable=SC2086
 
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 SELF=$(basename "${BASH_SOURCE[0]}")
 
 TESTING=0
 DRY_RUN=0
-SKIP_FILEMAKER_RESTART=9
+SKIP_FILEMAKER_STEPS=0
 
 source "${SCRIPT_DIR}/common.sh"
 
@@ -133,13 +131,7 @@ if [[ ${SKIP_FILEMAKER_STEPS} -ne 1 ]] ; then
 
   # Install the certificate
   log "INFO" "Installing new certificate"
-  fmsadmin \
-    -u "${FMS_USER}" \
-    -p "${FMS_PASSWORD}" \
-    certificate import "${CSTORE_DIR}/fullchain.pem" \
-    --keyfile "${CSTORE_DIR}/privkey.pem" \
-    -y > /dev/null
-
+  fmsadmin -u "${FMS_USER}" -p "${FMS_PASSWORD}" certificate import "${CSTORE_DIR}/fullchain.pem" --keyfile "${CSTORE_DIR}/privkey.pem" -y > /dev/null
   RESULT=$?
   log "INFO" "certificate import return code: ${RESULT}"
 

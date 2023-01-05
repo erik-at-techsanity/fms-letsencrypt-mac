@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#
+# Revokes a certificate.
+#
+# shellcheck disable=SC2086
+
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 SELF=$(basename "${BASH_SOURCE[0]}")
 
