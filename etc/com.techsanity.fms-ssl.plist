@@ -5,20 +5,20 @@
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>PATH</key>
-		<string>%%INSTALL_DIR%%:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+		<string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
 	</dict>
 	<key>Label</key>
-	<string>%%SERVICE_NAME%%</string>
+	<string>com.techsanity.fms-ssl</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>%%INSTALL_DIR%%/get_certificate.sh</string>
+		<string>/opt/homebrew/bin/get_certificate.sh</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
 	<key>StandardErrorPath</key>
-	<string>%%INSTALL_DIR%%/get_certificate.err</string>
+	<string>/opt/homebrew/var/log/fms-letsencrypt-mac/err</string>
 	<key>StandardOutPath</key>
-	<string>%%INSTALL_DIR%%/get_certificate.out</string>
+	<string>/opt/homebrew/var/log/fms-letsencrypt-mac/out</string>
 	<key>StartCalendarInterval</key>
 	<array>
 		<dict>
