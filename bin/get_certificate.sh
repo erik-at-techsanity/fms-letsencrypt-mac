@@ -11,15 +11,17 @@
 #
 
 BIN_DIR=$(dirname "${BASH_SOURCE[0]}")
-SELF=$(basename "${BASH_SOURCE}")
-PREFIX="$(dirname ${BASH_SOURCE})/.."
+SELF=$(basename "${BASH_SOURCE[0]}")
+PREFIX="$(dirname "${BASH_SOURCE[0]}")/.."
 ETC_DIR="${PREFIX}/etc"
 
 source "${BIN_DIR}/common.sh"
+
 if [[ ! -e "${BIN_DIR}/config.sh" ]] ; then
   echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
   exit ${E_NO_CONFIG}
 fi
+
 source "${ETC_DIR}/fms-letsencrypt-mac.conf"
 
 function usage() {
@@ -30,7 +32,7 @@ function usage() {
   exit ${E_USAGE}
 }
 
-while getopts "htx" OPT ; do
+while getopts "htd" OPT ; do
 	case ${OPT} in
     "t")
       TESTING=1
@@ -98,8 +100,8 @@ else
   log "INFO" "Not fetching certificate as requested"
 fi
 
-if [[ -e "${FULLCHAIN_DESTINATION}" && -e "${PREVKEY_DESTINATION}" ]] ; then
-  if [[ ! $(diff "${FULLCHAIN_SOURCE}" "${FULLCHAIN_DESTINATION}") && ! $(diff "${PRIVKEY_SOURCE}" "${PREVKEY_DESTINATION}") ]] ; then
+if [[ -e "${FULLCHAIN_DESTINATION}" && -e "${PRIVATE_KEY_DESTINATION}" ]] ; then
+  if [[ ! $(diff "${FULLCHAIN_SOURCE}" "${FULLCHAIN_DESTINATION}") && ! $(diff "${PRIVATE_KEY_SOURCE}" "${PRIVATE_KEY_DESTINATION}") ]] ; then
     log "INFO" "No updated certificate received - quitting"
     exit ${E_OK}
   fi
@@ -108,7 +110,7 @@ fi
 log "INFO" "Updated certificate received - installing"
 
 cp "${FULLCHAIN_SOURCE}" "${FULLCHAIN_DESTINATION}"
-cp "${PRIVKEY_SOURCE}" "${PREVKEY_DESTINATION}"
+cp "${PRIVATE_KEY_SOURCE}" "${PRIVATE_KEY_DESTINATION}"
 
 chmod 640 "${CSTORE_DIR}/privkey.pem"
 
