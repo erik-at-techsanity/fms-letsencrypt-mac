@@ -4,9 +4,9 @@
 # shellcheck disable=SC2034
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 PREFIX="$(dirname "${BASH_SOURCE[0]}")/.."
-ETC_DIR="${PREFIX}/etc"
-CONFIG_FILE=${ETC_DIR}/fms-letsencrypt-mac.conf
-CONFIG_FILE_DIST=${ETC_DIR}/fms-letsencrypt-mac.dist.conf
+
+CONFIG_FILE=/opt/homebrew/etc/fms-letsencrypt-mac.conf
+CONFIG_FILE_DIST=/opt/homebrew/etc/fms-letsencrypt-mac.dist.conf
 
 #
 # Return Codes
