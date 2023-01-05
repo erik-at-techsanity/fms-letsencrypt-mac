@@ -1,6 +1,7 @@
 #
 # Paths and Files
 #
+# shellcheck disable=SC2034
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 PREFIX="$(dirname "${BASH_SOURCE[0]}")/.."
 ETC_DIR="${PREFIX}/etc"

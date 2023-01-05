@@ -13,6 +13,10 @@
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 SELF=$(basename "${BASH_SOURCE[0]}")
 
+TESTING=0
+DRY_RUN=0
+SKIP_FILEMAKER_RESTART=9
+
 source "${SCRIPT_DIR}/common.sh"
 
 if [[ ! -e ${CONFIG_FILE} ]] ; then
@@ -23,20 +27,24 @@ fi
 source ${CONFIG_FILE}
 
 function usage() {
-  echo "Usage: ${SELF} [ -x ] [ -t ] [ -h ]"
-  echo "Where: -x specifies to perform the certificate creation"
-  echo "       -t indicates to use the Lets Encrypt testing environment"
-  echo "       -h Prints this help message and exits"
+  echo "Usage: ${SELF} [-d] [-f] [-t] [-h]"
+  echo "Where: -d don't actually perform the certificate creation"
+  echo "       -f skip FileMaker-related steps (for testing)"
+  echo "       -t use the Lets Encrypt testing environment"
+  echo "       -h prints this help message and exits"
   exit ${E_USAGE}
 }
 
-while getopts "htd" OPT ; do
+while getopts "dfht" OPT ; do
 	case ${OPT} in
+	  "f")
+	    SKIP_FILEMAKER_STEPS=1
+	    ;;
     "t")
       TESTING=1
       ;;
     "d")
-      DRY_RUN=0
+      DRY_RUN=1
       ;;
     "h"|*)
       usage
@@ -68,7 +76,6 @@ log "INFO" "Email:               ${EMAIL}"
 log "INFO" "Server Path:         ${FMS_SERVER_PATH}"
 log "INFO" "Web Root:            ${WEB_ROOT}"
 log "INFO" "CStore Dir:          ${CSTORE_DIR}"
-log "INFO" "Fetch Certificate:   ${FETCH_CERTIFICATE}"
 log "INFO" "CertBot Logfile:     ${CERTBOT_LOG}"
 log "INFO" "Dry Run:             ${DRY_RUN}"
 
@@ -77,12 +84,12 @@ if [[ ${DRY_RUN} -eq 1 ]] ; then
 fi
 
 PSCOUNT=$(fms_process_count)
-if [[ ${PSCOUNT} -eq 0 ]] ; then
+if [[ ${PSCOUNT} -eq 0 && ${SKIP_FILEMAKER_STEPS} -ne 1 ]] ; then
   log "ERROR" "FileMaker service is not running - quitting"
   exit ${E_FMS_SERVER_NOT_RUNNING}
 fi
 
-if [[ ${FETCH_CERTIFICATE} -eq 1 ]] ; then
+if [[ ${DRY_RUN} -eq 0 ]] ; then
   if [[ ${TESTING} -eq 1 ]] ; then
     TEST_CERT_ARG="--test-cert"
   else
@@ -118,36 +125,39 @@ if [[ -e "${SERVER_KEY}" ]]; then
     mv "${SERVER_KEY}" "${CSTORE_DIR}/serverKey-old.pem"
 fi
 
-# Remove the old certificate
-fmsadmin -u "${FMS_USER}" -p "${FMS_PASSWORD}" certificate delete --yes > /dev/null
-RESULT=$?
-log "INFO" "certificate delete return code: ${RESULT}"
+if [[ ${SKIP_FILEMAKER_STEPS} -ne 1 ]] ; then
+  log "INFO" "Removing old certificate"
+  fmsadmin -u "${FMS_USER}" -p "${FMS_PASSWORD}" certificate delete --yes > /dev/null
+  RESULT=$?
+  log "INFO" "certificate delete return code: ${RESULT}"
 
-# Install the certificate
-fmsadmin \
-  -u "${FMS_USER}" \
-  -p "${FMS_PASSWORD}" \
-  certificate import "${CSTORE_DIR}/fullchain.pem" \
-  --keyfile "${CSTORE_DIR}/privkey.pem" \
-  -y > /dev/null
+  # Install the certificate
+  log "INFO" "Installing new certificate"
+  fmsadmin \
+    -u "${FMS_USER}" \
+    -p "${FMS_PASSWORD}" \
+    certificate import "${CSTORE_DIR}/fullchain.pem" \
+    --keyfile "${CSTORE_DIR}/privkey.pem" \
+    -y > /dev/null
 
-RESULT=$?
-log "INFO" "certificate import return code: ${RESULT}"
+  RESULT=$?
+  log "INFO" "certificate import return code: ${RESULT}"
 
-# Stop FileMaker Server
-log "INFO" "Stopping FileMaker Server"
-launchctl stop ${FILEMAKER_SERVICE}
+  # Stop FileMaker Server
+  log "INFO" "Stopping FileMaker Server"
+  launchctl stop ${FILEMAKER_SERVICE}
 
-PSCOUNT=$(fms_process_count)
-while [[ ${PSCOUNT} -ne 0 ]] ; do
-  log "INFO" "Sleeping for ${FMS_STOP_SLEEP_TIME} seconds while the service stops (Process count: ${PSCOUNT})"
-  sleep ${FMS_STOP_SLEEP_TIME}
   PSCOUNT=$(fms_process_count)
-done
+  while [[ ${PSCOUNT} -ne 0 ]] ; do
+    log "INFO" "Sleeping for ${FMS_STOP_SLEEP_TIME} seconds while the service stops (Process count: ${PSCOUNT})"
+    sleep ${FMS_STOP_SLEEP_TIME}
+    PSCOUNT=$(fms_process_count)
+  done
 
-# Start FileMaker Server again
-log "INFO" "Starting FileMaker Server"
-launchctl start ${FILEMAKER_SERVICE}
+  # Start FileMaker Server again
+  log "INFO" "Starting FileMaker Server"
+  launchctl start ${FILEMAKER_SERVICE}
+fi
 
 log "INFO" "Done"
 

@@ -13,8 +13,8 @@ fi
 source ${CONFIG_FILE}
 
 function usage() {
-    echo "Usage: ${SELF} [ -t ] [ -h ]"
-    echo "Where: -t indicates to use the Lets Encrypt testing environment"
+    echo "Usage: ${SELF} [-t] [-h]"
+    echo "Where: -t Use the Lets Encrypt testing environment"
     echo "       -h Prints this help message and exits"
     exit ${E_USAGE}
 }
