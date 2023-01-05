@@ -10,19 +10,17 @@
 #  * logrotate
 #
 
-BIN_DIR=$(dirname "${BASH_SOURCE[0]}")
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 SELF=$(basename "${BASH_SOURCE[0]}")
-PREFIX="$(dirname "${BASH_SOURCE[0]}")/.."
-ETC_DIR="${PREFIX}/etc"
 
-source "${BIN_DIR}/common.sh"
+source "${SCRIPT_DIR}/common.sh"
 
-if [[ ! -e "${BIN_DIR}/config.sh" ]] ; then
-  echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
+if [[ ! -e ${CONFIG_FILE} ]] ; then
+  echo "ERROR: Please ensure ${CONFIG_FILE} exists. You may need to copy it from ${CONFIG_FILE_DIST} and edit it."
   exit ${E_NO_CONFIG}
 fi
 
-source "${ETC_DIR}/fms-letsencrypt-mac.conf"
+source ${CONFIG_FILE}
 
 function usage() {
   echo "Usage: ${SELF} [ -x ] [ -t ] [ -h ]"

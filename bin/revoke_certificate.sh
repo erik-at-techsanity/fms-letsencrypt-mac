@@ -1,13 +1,16 @@
 #!/bin/bash
 
-PREFIX=$(dirname "${BASH_SOURCE[0]}")
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+SELF=$(basename "${BASH_SOURCE[0]}")
 
-source "${PREFIX}/common.sh"
-if [[ ! -e "${PREFIX}/config.sh" ]] ; then
-  echo "ERROR: Please ensure config.sh exists. You may need to copy it from config.dist.sh and edit it."
+source "${SCRIPT_DIR}/common.sh"
+
+if [[ ! -e ${CONFIG_FILE} ]] ; then
+  echo "ERROR: Please ensure ${CONFIG_FILE} exists. You may need to copy it from ${CONFIG_FILE_DIST} and edit it."
   exit ${E_NO_CONFIG}
 fi
-source "${PREFIX}/fms-letsencrypt-mac.conf"
+
+source ${CONFIG_FILE}
 
 function usage() {
     echo "Usage: ${SELF} [ -t ] [ -h ]"
@@ -17,7 +20,7 @@ function usage() {
 }
 
 while getopts "htx" OPT ; do
-	case ${OPT} in
+    case ${OPT} in
         "t")
             TESTING=1
             ;;
